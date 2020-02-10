@@ -1,0 +1,26 @@
+ yarn add eslint
+ yarn eslint --init
+ yarn add prettier eslint-config-prettier eslint-plugin-prettier -D
+ yarn eslint --fix src --ext .js
+yarn add sequelize
+yarn add sequelize-cli -D
+yarn add pg pg-hstore
+yarn sequelize migration:create --name=create-users
+yarn sequelize db:migrate
+yarn add bcryptjs
+yarn add jsonwebtoken
+yarn add yup -> validações
+yarn add multer
+yarn add date-fns@next
+docker run --name mongobarber -p 27017:27017 -d -t mongo (-t é o nome da imagem)
+yarn add mongoose
+yarn add nodemailer
+yarn add express-handlebars nodemailer-express-handlebars
+docker run --name redisbarber -p 6379:6379 -d -t redis:alpine
+yarn add bee-queue
+yarn add @sentry/node@5.12.2
+yarn add express-async-errors
+yarn add youch <- mostra o errors do sentry no response
+yarn add dotenv
+
+sentry.io <- verificar exceções
