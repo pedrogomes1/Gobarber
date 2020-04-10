@@ -7,13 +7,14 @@ const jobs = [CancellationMail];
 // Pego todos os jobs e armazeno dentro do queues[]
 class Queue {
   constructor() {
-    this.queues = [];
+    this.queues = {};
 
     this.init();
   }
 
   init() {
     jobs.forEach(({ key, handle }) => {
+      // Não preciso retornar nada, forEach é o mais indicado
       // Em vez de eu pegar todo, eu desestruturo e pego apenas o key e o handle lá do cancellation
       this.queues[key] = {
         bee: new Bee(key, {

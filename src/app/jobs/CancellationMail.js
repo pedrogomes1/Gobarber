@@ -4,13 +4,12 @@ import Mail from '../../lib/Mail';
 
 class CancellationMail {
   get key() {
-    return 'CancellationMail';
+    return 'CancellationMail'; // Chave unica
   }
 
   async handle({ data }) {
+    // Tarefa que vai ser executada quando o processo for executado
     const { appointment } = data;
-
-    console.log('a fila foi');
 
     await Mail.sedndMail({
       to: `${data.provider.name} <${appointment.provider.email}`, // Lá do include do começo do delete

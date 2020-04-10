@@ -4,11 +4,9 @@ import User from '../models/User';
 
 class NotificationsController {
   async index(req, res) {
-    // Essa rota só pode ser acessível por prestadores de serviço
-
     const checkIsProvider = await User.findOne({
       where: {
-        id: req.userId, // Se o usuário logado é um prestador de serviço
+        id: req.userId,
         provider: true,
       },
     });
@@ -18,11 +16,10 @@ class NotificationsController {
         .status(401)
         .json({ error: 'Usuário logado é um prestador de serviço' });
     }
-
     const notification = await Notification.find({
       user: req.userId,
     })
-      .sort({ createdAt: 'desc' }) // Ordenar por data
+      .sort({ createdAt: 'desc' })
       .limit(20);
 
     return res.json(notification);
@@ -32,7 +29,7 @@ class NotificationsController {
     const notification = await Notification.findByIdAndUpdate(
       req.params.id,
       { read: true },
-      { new: true } // Serve para trazer o registro que foi atualizado de volta
+      { new: true }
     );
     return res.json(notification);
   }

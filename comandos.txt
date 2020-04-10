@@ -23,4 +23,6 @@ yarn add express-async-errors
 yarn add youch <- mostra o errors do sentry no response
 yarn add dotenv
 
+yarn add cors <- ele pode determina quais endereços podem acessar a api ... ele permite que outras aplicações acessem essa api ...1:10 do video ajuste da api ele explica
+
 sentry.io <- verificar exceções

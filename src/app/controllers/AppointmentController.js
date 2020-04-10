@@ -50,10 +50,7 @@ class AppointmentController {
       return res.status(400).json({ error: 'Validation fails' });
     }
 
-    // eslint-disable-next-line camelcase
     const { provider_id, date } = req.body;
-
-    // Verifcar se o provider é de fato um provider e nao é um user comum
 
     const isProvider = await User.findOne({
       where: { id: provider_id, provider: true },
@@ -65,14 +62,10 @@ class AppointmentController {
         .json({ error: 'You can only create appointments with providers' });
     }
 
-    const hourStart = startOfHour(parseISO(date)); // startofHour pega o inicio da hora, nao pega min e seg
-
+    const hourStart = startOfHour(parseISO(date));
     if (isBefore(hourStart, new Date())) {
-      // Verifico se o hourStart esta antes do newDate(data atual)
       return res.status(401).send({ error: 'Data não valida' });
     }
-
-    // Verificar se o prestador ja tem um agendamento marcado p mesmo horario
 
     const checkAvailability = await Appointment.findOne({
       where: {
@@ -82,7 +75,6 @@ class AppointmentController {
       },
     });
 
-    // O horario n esta vago
     if (checkAvailability) {
       return res
         .status(400)
@@ -90,21 +82,20 @@ class AppointmentController {
     }
 
     if (!(req.userId !== isProvider.id)) {
-      return res.json({
+      return res.status(400).json({
         error: 'Prestador de serviço não pode agendar para si próprio',
       });
     }
     const newAppointment = await Appointment.create({
       user_id: req.userId,
       provider_id,
-      date: hourStart, // Não cria horario com minutos e segundos
+      date: hourStart,
     });
 
-    // Notificar agendamento ao prestador de serviço
     const user = await User.findByPk(req.userId);
     const formattedDate = format(
       hourStart,
-      "'dia' dd 'de' MMMM', às' H:mm'h'", // dia 02 de junho as 8hrs`
+      "'dia' dd 'de' MMMM', às' H:mm'h'",
       { locale: pt }
     );
 
@@ -112,9 +103,6 @@ class AppointmentController {
       content: `Novo agendamento de ${user.name} para ${formattedDate}`,
       user: provider_id,
     });
-
-    console.log(newAppointment);
-
     return res.json(newAppointment);
   }
 
@@ -135,17 +123,11 @@ class AppointmentController {
     });
 
     if (appointment.user_id !== req.userId) {
-      // Verifica se o usuario logado é diferente do usuario passado por parametro
-      // Se ele não é o dono ele nao pode cancelar o agendamento
       return res.status(401).json({
         error: 'Usuário não tem permissão para cancelar esse agendamento',
       });
     }
     const dateWithSub = subHours(appointment.date, 2);
-
-    // 13:00
-    // 11:00 <- dateWithSub
-    // Horario atual for 11:25, não pode cancelar, pois tem que ser 2 hrs antes .. por isso tem q fazer verificação
 
     if (isBefore(dateWithSub, new Date())) {
       return res
@@ -153,7 +135,7 @@ class AppointmentController {
         .json({ error: 'Passou do horario para cancelar - Limite são 2 hrs' });
     }
 
-    appointment.canceled_at = new Date(); // Seto o horario atual no canceled
+    appointment.canceled_at = new Date();
 
     await appointment.save();
 
